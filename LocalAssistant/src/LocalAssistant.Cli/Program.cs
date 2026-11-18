@@ -32,6 +32,8 @@ switch (args[0])
     case "hometab":
         Console.WriteLine(PolarisSlideOps.EnsureHomeTabActive(args.Length > 1 ? args[1] : string.Empty) ? "성공" : "실패");
         return 0;
+    case "setkey":
+        return RunSetKey();
     default:
         PrintUsage();
         return 1;
@@ -92,6 +94,7 @@ void PrintUsage()
     Console.WriteLine("       copyelem <window-title-substring> <automationId>");
     Console.WriteLine("       paste <window-title-substring>");
     Console.WriteLine("       runjob <chrome-title-substring> <progress-json-path>  (Polaris는 자동으로 실행/생성됨)");
+    Console.WriteLine("       setkey <anthropic-api-key>  (DPAPI로 암호화해서 로컬에 저장)");
 }
 
 int RunJob()
@@ -191,6 +194,20 @@ int RunCopyElem()
     var ok = PageToClipboard.CaptureElementToClipboard(titleContains, automationId);
     Console.WriteLine(ok ? "클립보드에 복사됨" : "요소를 찾지 못함");
     return ok ? 0 : 1;
+}
+
+int RunSetKey()
+{
+    var key = args.Length > 1 ? args[1] : string.Empty;
+    if (string.IsNullOrWhiteSpace(key))
+    {
+        PrintUsage();
+        return 1;
+    }
+
+    ApiKeyStore.Save(key);
+    Console.WriteLine("API 키를 암호화해서 저장했습니다.");
+    return 0;
 }
 
 int RunPaste()
