@@ -21,6 +21,29 @@ public class ConversationStore
 
     public JsonArray Messages => _messages;
 
+    // Trims at the start of a real new user utterance only, never in the
+    // middle of a tool_use/tool_result exchange (the API errors if that pair
+    // is split across the trim point). Local storage keeps everything; only
+    // what's sent to Claude is capped (03-orchestrator.md 7).
+    public JsonArray RecentForApi(int maxUserTurns = 20)
+    {
+        var userTurnStarts = new List<int>();
+        for (var i = 0; i < _messages.Count; i++)
+        {
+            var msg = _messages[i];
+            if (msg?["role"]?.GetValue<string>() == "user" && msg["content"] is JsonValue)
+                userTurnStarts.Add(i);
+        }
+
+        if (userTurnStarts.Count <= maxUserTurns) return _messages;
+
+        var startIndex = userTurnStarts[userTurnStarts.Count - maxUserTurns];
+        var trimmed = new JsonArray();
+        for (var i = startIndex; i < _messages.Count; i++)
+            trimmed.Add(_messages[i]!.DeepClone());
+        return trimmed;
+    }
+
     public void AddUserText(string text)
     {
         _messages.Add(new JsonObject { ["role"] = "user", ["content"] = text });

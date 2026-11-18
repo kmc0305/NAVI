@@ -45,13 +45,18 @@ public class Orchestrator
             ClaudeResult result;
             try
             {
-                result = await _client.SendAsync(_history.Messages, toolDefs, SystemPrompt, ct);
+                result = await _client.SendAsync(_history.RecentForApi(), toolDefs, SystemPrompt, ct);
             }
             catch (Exception ex)
             {
                 MessageAdded?.Invoke(new ChatMessage(ChatRole.System, $"Claude 호출 실패: {ex.Message}"));
                 return;
             }
+
+            // 03-orchestrator.md 7: minimum viable cost tracking. Goes to the
+            // console/log, not the visible chat - a running token tally isn't
+            // something the user needs to read in every reply.
+            Console.WriteLine($"[토큰 사용] 입력 {result.InputTokens}, 출력 {result.OutputTokens}");
 
             if (result.StopReason != "tool_use")
             {

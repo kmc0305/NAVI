@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 
 namespace LocalAssistant.Engine;
 
-public record ClaudeResult(string StopReason, JsonArray ContentBlocks)
+public record ClaudeResult(string StopReason, JsonArray ContentBlocks, int InputTokens, int OutputTokens)
 {
     public string? Text => ContentBlocks
         .FirstOrDefault(b => b?["type"]?.GetValue<string>() == "text")?["text"]?.GetValue<string>();
@@ -60,6 +60,9 @@ public class ClaudeClient
         var json = JsonNode.Parse(responseText)!.AsObject();
         var stopReason = json["stop_reason"]?.GetValue<string>() ?? "end_turn";
         var content = json["content"]!.AsArray();
-        return new ClaudeResult(stopReason, content);
+        var usage = json["usage"];
+        var inputTokens = usage?["input_tokens"]?.GetValue<int>() ?? 0;
+        var outputTokens = usage?["output_tokens"]?.GetValue<int>() ?? 0;
+        return new ClaudeResult(stopReason, content, inputTokens, outputTokens);
     }
 }
