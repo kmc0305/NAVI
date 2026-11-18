@@ -45,6 +45,10 @@ Claude가 (a) 이미 만들어둔 전용 스킬을 쓸지 (b) 범용 UI 조작 �
 연달아 호출할 수 있음 (예: 창 목록 보기 → 그 중 하나 캡쳐 → 버튼 클릭 → 결과 확인). 요청 간
 기억(대화 맥락)은 v1에서는 없음 (단순성 우선, 필요해지면 나중에 추가).
 
+도구를 하나도 안 불러도 됨 — Claude가 그냥 텍스트로 답하면 끝나는 `end_turn` 경로도 당연히
+있음. 그래서 "일정 체크해줘" 같은 작업성 요청뿐 아니라 일정·작업과 무관한 일반 질문도 추가
+설계 없이 같은 흐름으로 처리됨 ([05번 문서](./05-timetree-schedule-skill.md) 5번 참고).
+
 ## 3. Tool Registry — Claude에게 뭘 쥐어줄 것인가
 
 두 계층으로 나눔. **이 구분 자체가 안전장치**다 — "위험한 건 LLM이 판단해서 피하길
@@ -55,6 +59,7 @@ Claude가 (a) 이미 만들어둔 전용 스킬을 쓸지 (b) 범용 UI 조작 �
 | 도구 이름 | 매핑 | 비고 |
 |---|---|---|
 | `convert_chrome_pdf_to_pptx` | `PolarisLauncher` + `PdfToPptxJob.Run` (M1) | 입력: 크롬 창 제목 힌트(선택). 이미 끝까지 검증됨 |
+| `check_timetree_schedule` | 전용 Chrome 프로필 + `screenshot_window` | [05번 문서](./05-timetree-schedule-skill.md) 참고 — 읽기 전용, Claude Vision으로 해석 |
 
 새 반복 작업이 생기면 이 레이어에 하나씩 추가 (예: 나중에 "블로그 포스팅" Tier 1 커넥터가
 생기면 여기 합류).

@@ -89,6 +89,7 @@
 ### 4.3 스케줄러
 - cron 표현식 기반 트리거 (`"0 8 * * *"` → 매일 8시)
 - 이벤트 기반 트리거 확장 가능 (예: 특정 창에 새 메시지 알림 뜨면 발동)
+- **PC 부팅/트레이앱 시작 시** 트리거 (예: TimeTree 일정 자동 조회 — [05번 문서](./05-timetree-schedule-skill.md))
 
 ### 4.4 자격증명 관리
 - Windows Credential Manager 또는 DPAPI로 암호화 저장
