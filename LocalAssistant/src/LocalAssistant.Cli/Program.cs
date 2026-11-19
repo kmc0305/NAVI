@@ -17,8 +17,6 @@ switch (args[0])
         return 0;
     case "setkey":
         return RunSetKey();
-    case "setfirestore":
-        return RunSetFirestore();
     default:
         PrintUsage();
         return 1;
@@ -75,7 +73,6 @@ void PrintUsage()
     Console.WriteLine("       shot <window-title-substring> [outputPath]");
     Console.WriteLine("       list");
     Console.WriteLine("       setkey <anthropic-api-key>  (DPAPI로 암호화해서 로컬에 저장)");
-    Console.WriteLine("       setfirestore <firebase-project-id> <service-account-key.json 경로>");
 }
 
 int RunSetKey()
@@ -92,23 +89,4 @@ int RunSetKey()
     return 0;
 }
 
-int RunSetFirestore()
-{
-    var projectId = args.Length > 1 ? args[1] : string.Empty;
-    var keyPath = args.Length > 2 ? args[2] : string.Empty;
-
-    if (string.IsNullOrWhiteSpace(projectId) || string.IsNullOrWhiteSpace(keyPath) || !File.Exists(keyPath))
-    {
-        Console.WriteLine("project-id와 실제 존재하는 서비스 계정 키 파일 경로가 필요합니다.");
-        PrintUsage();
-        return 1;
-    }
-
-    var configPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "LocalAssistant", "firestore_config.json");
-    new FirestoreConfigStore(configPath).Save(projectId, keyPath);
-    Console.WriteLine("Firestore 설정을 저장했습니다.");
-    return 0;
-}
 
