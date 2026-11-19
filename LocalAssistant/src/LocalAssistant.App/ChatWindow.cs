@@ -79,11 +79,12 @@ public class ChatWindow : Form
         var dataDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LocalAssistant");
         var history = new ConversationStore(Path.Combine(dataDir, "conversation.json"));
+        var memory = new MemoryNoteStore(Path.Combine(dataDir, "memory.md"));
         var client = new ClaudeClient(new HttpClient(), apiKey);
         var tools = new ToolRegistry();
-        tools.Register(new ConvertChromePdfToPptxTool());
+        tools.Register(new UpdateMemoryNoteTool(memory));
         _taskRunner = new TaskRunner();
-        _orchestrator = new Orchestrator(client, tools, _taskRunner, history);
+        _orchestrator = new Orchestrator(client, tools, _taskRunner, history, memory);
         _orchestrator.MessageAdded += OnMessageAdded;
         _taskRunner.Changed += OnTasksChanged;
 

@@ -1,0 +1,21 @@
+{
+  "name": "pdf-duplicator-core-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/convert.mjs",
+  "bin": {
+    "pdfdup": "src/cli.mjs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@napi-rs/canvas": "^1.1.1",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.5.438"
+  }
+}
