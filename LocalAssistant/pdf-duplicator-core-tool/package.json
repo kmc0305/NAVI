@@ -1,0 +1,19 @@
+{
+  "name": "pdf-duplicator-core-tool",
+  "version": "1.0.0",
+  "description": "스크린샷 등 이미지 여러 장을 한 PDF로 합치는 도구",
+  "main": "src/images-to-pdf.mjs",
+  "bin": {
+    "imgtopdf": "src/cli.mjs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}
