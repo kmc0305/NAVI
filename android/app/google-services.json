@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855076796375",
+    "project_id": "navi-assistant-e82e9",
+    "storage_bucket": "navi-assistant-e82e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855076796375:android:b86d9f91025b3db5653d92",
+        "android_client_info": {
+          "package_name": "com.navi.assistant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSf-2VHgKkr_PI-FiCPvrADOGXUbaWwS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
