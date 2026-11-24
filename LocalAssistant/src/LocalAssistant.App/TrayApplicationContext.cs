@@ -1,3 +1,5 @@
+using LocalAssistant.Engine;
+
 namespace LocalAssistant.App;
 
 public class TrayApplicationContext : ApplicationContext
@@ -5,6 +7,7 @@ public class TrayApplicationContext : ApplicationContext
     private readonly NotifyIcon _trayIcon;
     private readonly HotkeyWindow _hotkeyWindow;
     private readonly ChatWindow _chatWindow;
+    private FirestoreBridge? _firestoreBridge;
 
     public TrayApplicationContext()
     {
@@ -26,6 +29,8 @@ public class TrayApplicationContext : ApplicationContext
         _hotkeyWindow = new HotkeyWindow();
         _hotkeyWindow.HotkeyPressed += ToggleChat;
         _hotkeyWindow.Register(); // Ctrl+Alt+Space
+
+        StartFirestoreBridgeIfConfigured();
     }
 
     private void ToggleChat()
@@ -41,11 +46,31 @@ public class TrayApplicationContext : ApplicationContext
         }
     }
 
+    private void StartFirestoreBridgeIfConfigured()
+    {
+        var orchestrator = _chatWindow.Orchestrator;
+        var config = FirebaseConfigStore.Load();
+        if (orchestrator is null || config is null) return;
+
+        try
+        {
+            _firestoreBridge = FirestoreBridge.Create(config, orchestrator, _chatWindow);
+            _firestoreBridge.StartListening(CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            // 04-android-windows-bridge.md: 브릿지가 없어도 로컬 채팅은 그대로 동작해야
+            // 하므로, 연결 실패는 트레이 알림만 띄우고 앱 전체를 막지 않는다.
+            _trayIcon.ShowBalloonTip(5000, "개인 비서", $"Firestore 연결 실패: {ex.Message}", ToolTipIcon.Warning);
+        }
+    }
+
     private void ExitApp()
     {
         _trayIcon.Visible = false;
         _hotkeyWindow.Dispose();
         _chatWindow.Dispose();
+        if (_firestoreBridge is not null) _ = _firestoreBridge.DisposeAsync();
         ExitThread();
     }
 }

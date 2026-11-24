@@ -24,7 +24,7 @@ public class TaskRunner
         get { lock (_items) return _items.ToList(); }
     }
 
-    public async Task<string> RunAsync(string name, Func<Task<string>> action, CancellationToken ct)
+    public async Task<T> RunAsync<T>(string name, Func<Task<T>> action, CancellationToken ct)
     {
         var item = new TaskItem { Id = Guid.NewGuid(), Name = name, Status = TaskStatus2.Queued };
         lock (_items) _items.Add(item);
