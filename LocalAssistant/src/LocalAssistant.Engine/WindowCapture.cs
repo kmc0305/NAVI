@@ -12,11 +12,7 @@ public static class WindowCapture
     public static bool CaptureWindowByTitle(string titleContains, string outputPath)
     {
         using var automation = new UIA3Automation();
-        var desktop = automation.GetDesktop();
-
-        var window = desktop.FindAllChildren()
-            .FirstOrDefault(e => (e.Name ?? string.Empty)
-                .Contains(titleContains, StringComparison.OrdinalIgnoreCase));
+        var window = WindowFinder.FindWindow(automation, titleContains);
 
         if (window is null || !window.Properties.NativeWindowHandle.IsSupported)
             return false;
